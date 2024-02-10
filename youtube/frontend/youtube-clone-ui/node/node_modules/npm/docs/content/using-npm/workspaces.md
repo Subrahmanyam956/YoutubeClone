@@ -8,7 +8,7 @@ description: Working with workspaces
 
 **Workspaces** is a generic term that refers to the set of features in the
 npm cli that provides support to managing multiple packages from your local
-files system from within a singular top-level, root package.
+file system from within a singular top-level, root package.
 
 This set of features makes up for a much more streamlined workflow handling
 linked packages from the local file system. Automating the linking process
@@ -109,7 +109,7 @@ respect the provided `workspace` configuration.
 ### Using workspaces
 
 Given the [specifities of how Node.js handles module resolution](https://nodejs.org/dist/latest-v14.x/docs/api/modules.html#modules_all_together) it's possible to consume any defined workspace
-by it's declared `package.json` `name`. Continuing from the example defined
+by its declared `package.json` `name`. Continuing from the example defined
 above, let's also create a Node.js script that will require the `workspace-a`
 example module, e.g:
 
@@ -175,6 +175,32 @@ npm run test --workspaces
 ```
 
 Will run the `test` script in both `./packages/a` and `./packages/b`.
+
+Commands will be run in each workspace in the order they appear in your `package.json`
+
+```
+{
+  "workspaces": [ "packages/a", "packages/b" ]
+}
+```
+
+Order of run is different with:
+
+```
+{
+  "workspaces": [ "packages/b", "packages/a" ]
+}
+```
+
+### Ignoring missing scripts
+
+It is not required for all of the workspaces to implement scripts run with the `npm run` command.
+
+By running the command with the `--if-present` flag, npm will ignore workspaces missing target script.
+
+```
+npm run test --workspaces --if-present
+```
 
 ### See also
 

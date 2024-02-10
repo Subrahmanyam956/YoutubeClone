@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 import java.util.Set;
 
-@Document(value = "Video")
+@Document(value = "video")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +25,7 @@ public class Video {
     private Set<String> tags;
 
     private String videoUrl;
-    private VideoStatus status;
+    private VideoStatus videoStatus;
     private Integer viewCount;
     private String thumbnailUrl;
     private List<Comment> commentList;
