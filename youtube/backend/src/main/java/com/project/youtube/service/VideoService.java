@@ -3,6 +3,7 @@ package com.project.youtube.service;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.project.youtube.dto.UploadVideoResponse;
 import com.project.youtube.dto.VideoDto;
 import com.project.youtube.model.Video;
 import com.project.youtube.model.VideoData;
@@ -35,9 +36,10 @@ public class VideoService {
         this.videoRepository = videoRepository;
     }
 
-    public String uploadVideo(MultipartFile file) {
+    public UploadVideoResponse uploadVideo(MultipartFile file) {
         String videoName = null;
         Video video;
+        UploadVideoResponse uploadVideoResponse = null;
         try {
             // uplaod file to Mongo
             String title = UUID.randomUUID().toString();
@@ -46,16 +48,16 @@ public class VideoService {
             metaData.put("title", title);
             metaData.put("fileSize", file.getSize());
 
-            String id = gridFsTemplate.store(file.getInputStream(), file.getName(), file.getContentType(), metaData).toString();
+            String videoDataId = gridFsTemplate.store(file.getInputStream(), file.getName(), file.getContentType(), metaData).toString();
             video = new Video();
-            video.setId(id);
-            videoRepository.save(video);
+            Video savedVideo = videoRepository.save(video);
+            uploadVideoResponse = new UploadVideoResponse(savedVideo.getId(), videoDataId);
 
-            videoName = id + "." + StringUtils.getFilenameExtension(file.getOriginalFilename());
+//            videoName = videoDataId + "." + StringUtils.getFilenameExtension(file.getOriginalFilename());
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        return videoName;
+        return uploadVideoResponse;
     }
 
     public VideoData getVideoData(String id) throws IOException {
@@ -94,10 +96,13 @@ public class VideoService {
     public String uploadThumbnail(MultipartFile file, String videoId) {
         Video savedVideo = getVideoById(videoId);
         // upload the thumbnail multipart file
-        String thumbnailName = uploadVideo(file);
-        String[] name = thumbnailName.split("\\.");
-        String thumbnailUrl = name[0];
-        savedVideo.setThumbnailUrl(thumbnailUrl);
-        return thumbnailUrl;
+        UploadVideoResponse uploadVideoResponse = uploadVideo(file);
+        String thumbnailName = uploadVideoResponse.getVideoId();
+
+//        String[] name = thumbnailName.split("\\.");
+//        String thumbnailUrl = name[0];
+        savedVideo.setThumbnailUrl(thumbnailName);
+        videoRepository.save(savedVideo);
+        return thumbnailName;
     }
 }

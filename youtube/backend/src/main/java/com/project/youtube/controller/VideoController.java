@@ -1,5 +1,6 @@
 package com.project.youtube.controller;
 
+import com.project.youtube.dto.UploadVideoResponse;
 import com.project.youtube.dto.VideoDto;
 import com.project.youtube.model.VideoData;
 import com.project.youtube.service.VideoService;
@@ -20,7 +21,7 @@ public class VideoController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public String uploadVideo(@RequestParam("file")MultipartFile file) {
+    public UploadVideoResponse uploadVideo(@RequestParam("file")MultipartFile file) {
         return videoService.uploadVideo(file);
     }
 

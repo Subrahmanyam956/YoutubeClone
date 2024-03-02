@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Set;
 
+
+// Here VideoRepository is the actual Video model saving repository. It stores the information of the video. Metadata.
+
 @Repository
 public interface VideoRepository extends MongoRepository<Video, String> {
     List<Video> findByUserId(String userId);
